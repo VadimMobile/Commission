@@ -1,37 +1,35 @@
 fun main() {
-    calculation()
-    println("Комиссия за перевод: $commission руб.")
+    println(calculation())
 }
 
-const val monthLimit = 75_000
-const val visaCommission = 0.0075
-const val visaMinCommission = 35
-const val maxDayLimit = 150_000
-const val maxMonthLimit = 600_000
-const val typeVisa = "Visa"
-const val typeMastercard = "Mastercard"
-const val typeMir = "Мир"
-const val mirCommission = 0
-var commission = 0
+const val MONTH_LIMIT = 75_000
+const val VISA_COMMISSION = 0.0075
+const val VISA_MIN_COMMISSION = 35
+const val MAX_DAY_LIMIT = 150_000
+const val MAX_MONTH_LIMIT = 600_000
+const val TYPE_VISA = "Visa"
+const val TYPE_MASTERCARD = "Mastercard"
+const val TYPE_MIR = "Мир"
+const val MIR_COMMISSION = 0
+const val ERROR_TYPE = -1
+const val ERROR_MAX_MONTH_LIMIT = -2
+const val ERROR_MAX_DAY_LIMIT = -3
 
-fun calculation(cardType: String = "Мир", totalTransfersThisMonth: Int = 0, transferAmount: Int = 150000): Int {
+fun calculation(cardType: String = "Мир", totalTransfersThisMonth: Int = 500000, transferAmount: Int = 150000): Int {
     val sumCommissionMastercard = (transferAmount * 0.006 + 20).toInt()
-    val sumCommissionVisa = (transferAmount * visaCommission).toInt()
-    val mastercardCommissions = if (transferAmount <= monthLimit) 0 else sumCommissionMastercard - 450
-    val visaCommissions = if (sumCommissionVisa > visaMinCommission) sumCommissionVisa else visaMinCommission
+    val sumCommissionVisa = (transferAmount * VISA_COMMISSION).toInt()
+    val mastercardCommissions = if (transferAmount <= MONTH_LIMIT) 0 else sumCommissionMastercard - 450
+    val visaCommissions = if (sumCommissionVisa > VISA_MIN_COMMISSION) sumCommissionVisa else VISA_MIN_COMMISSION
+    var commission = 0
 
-    if (totalTransfersThisMonth + transferAmount > maxMonthLimit) {
+    if (totalTransfersThisMonth + transferAmount > MAX_MONTH_LIMIT) return ERROR_MAX_MONTH_LIMIT
+    if (transferAmount > MAX_DAY_LIMIT) return ERROR_MAX_DAY_LIMIT
 
-        println("Превышен месячный лимит на сумму переводов")
-    }
-    if (transferAmount > maxDayLimit) {
-        println("Превышен суточный лимит на сумму переводов")
-    }
     when (cardType) {
-        typeMastercard -> commission = mastercardCommissions
-        typeVisa -> commission = visaCommissions
-        typeMir -> commission = mirCommission
-        else -> println("Неккоректная операция")
+        TYPE_MASTERCARD -> commission = mastercardCommissions
+        TYPE_VISA -> commission = visaCommissions
+        TYPE_MIR -> commission = MIR_COMMISSION
+        else -> ERROR_TYPE
     }
     return commission
 }
