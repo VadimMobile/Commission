@@ -10,7 +10,7 @@ class CommissionKtTest {
         val totalTransfersThisMonth = 0
         val transferAmount = 150000
         val result = calculation(cardType, totalTransfersThisMonth, transferAmount)
-        assertEquals(0, result)
+        assertEquals(5, result)
     }
 
     @Test
